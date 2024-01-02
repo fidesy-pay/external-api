@@ -1,0 +1,8 @@
+type: google.api.Service
+config_version: 3
+
+http:
+  rules:
+    - selector: coingecko_api.CoinGeckoAPI.GetPrice
+      post: /price
+      body: '*'

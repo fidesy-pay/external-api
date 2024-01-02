@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package coingecko_api;
+
+option go_package = "github.com/fidesy-pay/external-api;coingecko_api";
+
+service CoinGeckoAPI {
+  rpc GetPrice(GetPriceRequest) returns(GetPriceResponse);
+}
+
+message GetPriceRequest {
+  string symbol = 1;
+}
+
+message GetPriceResponse {
+  double price_usd = 1;
+}
