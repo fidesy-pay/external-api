@@ -4,5 +4,5 @@ config_version: 3
 http:
   rules:
     - selector: coingecko_api.CoinGeckoAPI.GetPrice
-      post: /price
+      post: /coingecko_api.CoinGeckoAPI.GetPrice
       body: '*'

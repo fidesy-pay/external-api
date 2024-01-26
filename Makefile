@@ -4,17 +4,22 @@ PROJECT_NAME=external-api
 USER=fidesy-pay
 
 
+PROTOS := coingecko-api
+
 PHONY: generate
 generate:
-	mkdir -p pkg/coingecko-api
-	protoc --go_out=pkg/coingecko-api --go_opt=paths=import \
-			--go-grpc_out=pkg/coingecko-api --go-grpc_opt=paths=import \
-			--grpc-gateway_out=pkg/coingecko-api \
-            --grpc-gateway_opt grpc_api_configuration=./api/${PROJECT_NAME}/coingecko-api.yaml \
+	$(foreach project,$(PROTOS), \
+        mkdir -p pkg/$(project); \
+        protoc --go_out=pkg/$(project) --go_opt=paths=import \
+            --go-grpc_out=pkg/$(project) --go-grpc_opt=paths=import \
+            --grpc-gateway_out=pkg/$(project) \
+            --grpc-gateway_opt grpc_api_configuration=./api/$(project)/$(project).yaml \
             --grpc-gateway_opt allow_delete_body=true \
-			api/${PROJECT_NAME}/coingecko-api.proto
-	mv pkg/coingecko-api/github.com/${USER}/${PROJECT_NAME}/* pkg/coingecko-api
-	rm -r pkg/coingecko-api/github.com
+            api/$(project)/$(project).proto; \
+        mv pkg/$(project)/github.com/${USER}/external-api/* pkg/$(project); \
+        rm -r pkg/$(project)/github.com; \
+    )
+
 
 PHONY: clean
 clean:
@@ -49,12 +54,13 @@ migrate-down:
 PHONY: generate-swagger
 generate-swagger:
 	protoc -I . --openapiv2_out ./ \
-	  --experimental_allow_proto3_optional=true \
-      --openapiv2_opt grpc_api_configuration=./api/$(PROJECT_NAME)/$(PROJECT_NAME).yaml \
-      --openapiv2_opt proto3_optional_nullable=true \
-      --openapiv2_opt allow_delete_body=true \
-      ./api/$(PROJECT_NAME)/$(PROJECT_NAME).proto
+		--experimental_allow_proto3_optional=true \
+		 --openapiv2_opt grpc_api_configuration=./api/coingecko-api/coingecko-api.yaml \
+		--openapiv2_opt proto3_optional_nullable=true \
+		--openapiv2_opt allow_delete_body=true \
+		./api/coingecko-api/coingecko-api.proto
 
-	mv api/$(PROJECT_NAME)/$(PROJECT_NAME).swagger.json ./swaggerui/swagger_temp.json
-	jq '. + {"host": "$(APP_NAME).fidesy.xyz:$(PROXY_PORT)", "schemes": ["http"]}' ./swaggerui/swagger_temp.json > ./swaggerui/swagger.json
+	mv api/coingecko-api/coingecko-api.swagger.json ./swaggerui/swagger_temp.json
+	jq '. + {"host": "$(SERVER_HOST):$(PROXY_PORT)", "schemes": ["http"]}' ./swaggerui/swagger_temp.json > ./swaggerui/swagger.json
 	rm ./swaggerui/swagger_temp.json
+

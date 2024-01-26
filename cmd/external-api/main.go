@@ -5,7 +5,9 @@ import (
 	"github.com/fidesy-pay/external-api/internal/app/coingecko_api"
 	"github.com/fidesy-pay/external-api/internal/config"
 	coingeckoapi "github.com/fidesy-pay/external-api/internal/pkg/coingecko-api"
+	desc "github.com/fidesy-pay/external-api/pkg/coingecko-api"
 	"github.com/fidesyx/platform/pkg/scratch"
+	"github.com/fidesyx/platform/pkg/scratch/logger"
 	"log"
 	"os"
 	"os/signal"
@@ -36,8 +38,15 @@ func main() {
 		log.Fatalf("scratch.New: %v", err)
 	}
 
+	// register reverse http proxy
+	reverseProxyRouter := scratch.ReverseProxyRouter()
+	err = desc.RegisterCoinGeckoAPIHandlerServer(ctx, reverseProxyRouter, impl)
+	if err != nil {
+		logger.Fatalf("RegisterCoinGeckoAPIHandlerServer: %v", err)
+	}
+
 	err = app.Run(ctx, impl)
 	if err != nil {
-		log.Fatalf("app.Run: %v", err)
+		logger.Fatalf("app.Run: %v", err)
 	}
 }

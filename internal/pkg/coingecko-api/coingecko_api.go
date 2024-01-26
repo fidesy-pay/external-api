@@ -56,6 +56,7 @@ func (s *Service) GetPrice(ctx context.Context, symbol string) (float64, error) 
 	}
 
 	body, _ := io.ReadAll(response.Body)
+
 	var data map[string]CoinGeckoResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
