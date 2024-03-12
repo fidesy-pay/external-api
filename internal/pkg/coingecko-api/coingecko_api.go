@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/fidesy-pay/external-api/internal/config"
 	"io"
 	"net/http"
 )
@@ -15,7 +14,7 @@ const (
 )
 
 var (
-	ErrExceedRateLimit = errors.New("you've exceeded the rate limit")
+	ErrExceededRateLimit = errors.New("you've exceeded the rate limit")
 )
 
 type (
@@ -25,12 +24,28 @@ type (
 	}
 )
 
-func New() *Service {
+type Option func(s *Service)
+
+func WithAPIKey(apiKey string) Option {
+	return func(s *Service) {
+		s.apiKey = apiKey
+	}
+}
+
+func WithHTTPClient(httpClient *http.Client) Option {
+	return func(s *Service) {
+		s.httpClient = httpClient
+	}
+}
+
+func New(opts ...Option) *Service {
 	s := &Service{
 		httpClient: http.DefaultClient,
 	}
 
-	s.apiKey = config.Get(config.CoinGeckoAPIKey).(string)
+	for _, opt := range opts {
+		opt(s)
+	}
 
 	return s
 }
@@ -52,7 +67,7 @@ func (s *Service) GetPrice(ctx context.Context, symbol string) (float64, error) 
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		return 0, ErrExceedRateLimit
+		return 0, ErrExceededRateLimit
 	}
 
 	body, _ := io.ReadAll(response.Body)

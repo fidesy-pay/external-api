@@ -18,7 +18,7 @@ func (i *Implementation) GetPrice(ctx context.Context, req *desc.GetPriceRequest
 
 	price, err := i.coinGeckoAPI.GetPrice(ctx, req.GetSymbol())
 	if err != nil {
-		if errors.Is(err, coingeckoapi.ErrExceedRateLimit) {
+		if errors.Is(err, coingeckoapi.ErrExceededRateLimit) {
 			return nil, status.Errorf(codes.ResourceExhausted, err.Error())
 		}
 

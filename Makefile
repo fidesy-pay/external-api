@@ -3,6 +3,7 @@
 PROJECT_NAME=external-api
 USER=fidesy-pay
 
+APP_NAME=${PROJECT_NAME}-stage
 
 PROTOS := coingecko-api
 
@@ -23,7 +24,7 @@ generate:
 
 PHONY: clean
 clean:
-	 if docker inspect ${PROJECT_NAME} > /dev/null 2>&1; then docker rm -f ${PROJECT_NAME} && docker rmi -f ${PROJECT_NAME}; else echo "Container not found."; fi
+	 if docker inspect ${APP_NAME} > /dev/null 2>&1; then docker rm -f ${APP_NAME} && docker rmi -f ${APP_NAME}; else echo "Container not found."; fi
 
 PHONY: go-build
 go-build:
@@ -34,13 +35,13 @@ go-build:
 PHONY: build
 build:
 	make go-build
-	docker build --tag ${PROJECT_NAME} .
+	docker build --tag ${APP_NAME} .
 
 PHONY: run
 run:
 	make clean
 	make build
-	docker run --name ${PROJECT_NAME} --network=zoo -dp 7070:7070 -e GRPC_PORT=7070 -e PROXY_PORT=7071 -e SWAGGER_PORT=7072 -e METRICS_PORT=7073 -e APP_NAME=${PROJECT_NAME} -e ENV=local ${PROJECT_NAME}
+	docker run --name ${APP_NAME} --network=zoo -dp 7070:7070 -e GRPC_PORT=7070 -e PROXY_PORT=7071 -e SWAGGER_PORT=7072 -e METRICS_PORT=7073 -e APP_NAME=${APP_NAME} -e ENV=local ${APP_NAME}
 
 PHONY: migrate-up
 migrate-up:

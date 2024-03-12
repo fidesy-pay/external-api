@@ -34,17 +34,18 @@ jobs:
 
       - name: Generate swagger
         run: |
-          PROXY_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
-          SWAGGER_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
-          
-          echo "PROXY_PORT=$PROXY_PORT" >> vars.env
-          echo "SWAGGER_PORT=$SWAGGER_PORT" >> vars.env
-          
-          # clone swaggerui
-          git clone https://github.com/fidesyx/platform
-          cp -r platform/swaggerui .
-          
-          make generate-swagger SERVER_HOST=${{ vars.SERVER_HOST }} PROXY_PORT=$PROXY_PORT PROJECT_NAME=${{ github.event.repository.name }}  
+          ls
+#          PROXY_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
+#          SWAGGER_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
+#
+#          echo "PROXY_PORT=$PROXY_PORT" >> vars.env
+#          echo "SWAGGER_PORT=$SWAGGER_PORT" >> vars.env
+#
+#          # clone swaggerui
+#          git clone https://github.com/fidesyx/platform
+#          cp -r platform/swaggerui .
+#
+#          make generate-swagger SERVER_HOST=${{ vars.SERVER_HOST }} PROXY_PORT=$PROXY_PORT PROJECT_NAME=${{ github.event.repository.name }}
 
   clean:
     runs-on: self-hosted
@@ -81,7 +82,7 @@ jobs:
           
           # generate random ports          
           GRPC_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
-          METRICS_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
+          METRICS_PORT=40501
           
           docker build --tag $APP_NAME_STAGE .
           
@@ -92,8 +93,6 @@ jobs:
              -e ENV=STAGING \
              -e GRPC_PORT=$GRPC_PORT -p $GRPC_PORT:$GRPC_PORT \
              -e METRICS_PORT=$METRICS_PORT -p $METRICS_PORT:$METRICS_PORT \
-             -e PROXY_PORT=$PROXY_PORT -p $PROXY_PORT:$PROXY_PORT \
-             -e SWAGGER_PORT=$SWAGGER_PORT -p $SWAGGER_PORT:$SWAGGER_PORT \
               $APP_NAME_STAGE
           
           echo http://${{ vars.SERVER_HOST }}:$SWAGGER_PORT/docs
@@ -109,7 +108,7 @@ jobs:
           
           # generate random ports          
           GRPC_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
-          METRICS_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))
+          METRICS_PORT=40500
           
           docker build --tag $APP_NAME .
           
@@ -120,6 +119,4 @@ jobs:
              -e ENV=PRODUCTION \
              -e GRPC_PORT=$GRPC_PORT \
              -e METRICS_PORT=$METRICS_PORT \
-             -e PROXY_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-             -e SWAGGER_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
               $APP_NAME
