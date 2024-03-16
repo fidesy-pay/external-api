@@ -6,6 +6,7 @@ require (
 	github.com/fidesy/sdk v0.0.0-20240308225403-c465e1dfe585
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
+	github.com/redis/go-redis/v9 v9.5.1
 	google.golang.org/grpc v1.62.0
 	google.golang.org/protobuf v1.32.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -15,6 +16,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hashicorp/go-syslog v1.0.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect

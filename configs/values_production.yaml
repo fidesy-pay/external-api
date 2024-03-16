@@ -1,1 +1,5 @@
 coin-gecko-api-key: CG-2L3RQQbDRhHt1AAZuCdHcDkN
+
+cache-ttl: 60s
+redis-host: external-api-redis-prod:6379
+redis-password: BbFO27R3gBqLYWwlDzAw

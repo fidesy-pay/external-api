@@ -1,0 +1,19 @@
+version: '3.7'
+
+networks:
+  zoo:
+    external: true
+
+services:
+  cache-local:
+    container_name: external-api-redis-local
+    image: redis:6.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass TmC5l7RLbVcGCzhBO9QT
+    networks:
+      - zoo
+    volumes:
+      - external-api-redis-local-volume:/var/lib/redis/data
+
+volumes:
+  external-api-redis-local-volume:
